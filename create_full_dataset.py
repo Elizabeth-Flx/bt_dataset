@@ -23,11 +23,11 @@ paths_pro = [
 ]
 
 # read parquets and concatenate
-df_ast = pd.concat([pd.read_parquet(path) for path in paths_ast])
-print("Loaded Astral data")
+# df_ast = pd.concat([pd.read_parquet(path) for path in paths_ast])
+# print("Loaded Astral data")
 
-df_tof = pd.concat([pd.read_parquet(path) for path in paths_tof])
-print("Loaded timsTOF data")
+# df_tof = pd.concat([pd.read_parquet(path) for path in paths_tof])
+# print("Loaded timsTOF data")
 
 df_pro = pd.concat([pd.read_parquet(path) for path in paths_pro])
 print("Loaded ProteomeTools data")
@@ -43,25 +43,26 @@ dataset_cols = [
 ]
 
 # set collision_energy_aligned_normed as collision_energy
-df_tof['collision_energy'] = df_tof['collision_energy_aligned_normed']
+# df_tof['collision_energy'] = df_tof['collision_energy_aligned_normed']
 
 # temporarily norm astral collision energy
-df_ast['collision_energy'] = df_ast['collision_energy'] / 100
+# df_ast['collision_energy'] = df_ast['collision_energy'] / 100
 
 print("Collision energies set")
 
-df_ast = df_ast[dataset_cols]
-df_tof = df_tof[dataset_cols]
+# df_ast = df_ast[dataset_cols]
+# df_tof = df_tof[dataset_cols]
 df_pro = df_pro[dataset_cols]
 print("Columns selected")
 
 
-df_ast = df_ast.sample(frac=1, random_state=42).reset_index(drop=True)
+# df_ast = df_ast.sample(frac=1, random_state=42).reset_index(drop=True)
+# df_tof = df_tof.sample(frac=1, random_state=42).reset_index(drop=True)
 df_pro = df_pro.sample(frac=1, random_state=42).reset_index(drop=True)
-df_tof = df_tof.sample(frac=1, random_state=42).reset_index(drop=True)
+
 print("Data shuffled")
 
-df_combined = pd.concat([df_ast, df_tof, df_pro], axis=0, ignore_index=True)
+df_combined = pd.concat([df_pro, ], axis=0, ignore_index=True)
 df_combined
 print("Data combined")
 
@@ -101,11 +102,11 @@ print("One-hot encoding done")
 
 df_combined['modified_sequence'] = df_combined['prosit_sequence']
 
-df_combined.to_parquet("./full_dataset.parquet")
+df_combined.to_parquet("./proteome_tools_dataset.parquet")
 print("Full data saved")
 
-df_combined.head(1_000_000).to_parquet("./reduced_dataset.parquet")
-print("Reduced data saved")
+# df_combined.head(1_000_000).to_parquet("./astral_reduced_dataset.parquet")
+# print("Reduced data saved")
 
 
 
@@ -117,9 +118,9 @@ train   = df_combined.iloc[                 :int(n_rows * 0.8)]
 val     = df_combined.iloc[int(n_rows * 0.8):int(n_rows * 0.9)]
 test    = df_combined.iloc[int(n_rows * 0.9):]
 
-train.to_parquet("./combined_dlomix_format_train.parquet")
+train.to_parquet("./proteome_tools_dlomix_format_train.parquet")
 print("Train data saved")
-val  .to_parquet("./combined_dlomix_format_val.parquet")
+val  .to_parquet("./proteome_tools_dlomix_format_val.parquet")
 print("Val data saved")
-test .to_parquet("./combined_dlomix_format_test.parquet")
+test .to_parquet("./proteome_tools_dlomix_format_test.parquet")
 print("Test data saved")
